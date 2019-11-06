@@ -1,0 +1,53 @@
+/*
+ * TsuroBoard.cgs
+ *
+ * Created by pacog on Nov 1, 2019
+ */
+
+mutable class TsuroBoard extends Game
+
+//class variables
+var tiles;
+var board;
+var player1Pos;
+var player2Pos;
+
+method TsuroBoard(board, tiles, player1Pos, player2Pos)
+    //initialize board
+    for k from 1 to 6 do
+        for i from 1 to 6 do
+            if board[k][i].Class == Integer then
+                //if what we're looking at is an integer, then convert
+                //the int to the Mapped tile and remove it from the tiles list
+                board[k][i] := tiles[board[k][i]];
+                tiles.Remove(board[k][i]);
+            elseif board[k][i].Class == Map then
+                //if a Map object is already on the board, then we can remove
+                //that tile from the tiles list
+                tiles.Remove(board[k][i]);
+            end
+        end
+    end
+
+end
+
+method At(position)
+    return board[position[1]][position[2]];
+end
+
+method PrintTiles()
+    Worksheet.Print(tiles);
+end
+
+//from this method we are going to return a list of all possible next board states
+method NextPossibleBoardStates(Player player)
+    boardStates := {};
+    
+    
+end
+
+override property ToString.get
+    return board.ToString;
+end
+
+end

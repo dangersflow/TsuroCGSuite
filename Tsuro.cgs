@@ -1,0 +1,87 @@
+/*
+ * Tsuro.cgs
+ *
+ * Created by pacog on Nov 1, 2019
+ */
+ 
+ //sample input
+ /*
+ NewTsuro.Tsuro([
+    [5, "x", "x", "x", "x", "x"],
+    ["x", "x", "x", "x", "x", "x"],
+    ["x", "x", "x", "x", "x", "x"],
+    ["x", "x", "x", "x", "x", "x"],
+    ["x", "x", "x", "x", "x", "x"],
+    ["x", "x", "x", "x", "x", 8]
+    ], [1, 1], [6, 6])
+ */
+
+class Tsuro extends Game
+
+//class variable
+var board;
+var tiles;
+//these are going to be coordinates [x, y]
+var player1Pos;
+var player2Pos;
+
+method Tsuro(tsuroBoard, player1Pos, player2Pos)
+ //initialize tiles
+    tiles := [
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"d", "d"=>"c", "e"=>"f", "f"=>"e", "g"=>"h", "h"=>"g"}),
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"f", "d"=>"e", "e"=>"d", "f"=>"c", "g"=>"h", "h"=>"g"}),
+        TsuroTile({"a"=>"e", "b"=>"f", "c"=>"h", "d"=>"g", "e"=>"a", "f"=>"b", "g"=>"d", "h"=>"c"}),
+        TsuroTile({"a"=>"h", "b"=>"c", "c"=>"b", "d"=>"g", "e"=>"f", "f"=>"e", "g"=>"d", "h"=>"a"}),
+        TsuroTile({"a"=>"d", "b"=>"c", "c"=>"b", "d"=>"a", "e"=>"h", "f"=>"g", "g"=>"f", "h"=>"e"}),
+        TsuroTile({"a"=>"h", "b"=>"c", "c"=>"b", "d"=>"e", "e"=>"d", "f"=>"g", "g"=>"f", "h"=>"a"}),
+        TsuroTile({"a"=>"e", "b"=>"f", "c"=>"g", "d"=>"h", "e"=>"a", "f"=>"b", "g"=>"c", "h"=>"d"}),
+        TsuroTile({"a"=>"c", "b"=>"h", "c"=>"a", "d"=>"g", "e"=>"f", "f"=>"e", "g"=>"d", "h"=>"b"}),
+        TsuroTile({"a"=>"f", "b"=>"e", "c"=>"h", "d"=>"g", "e"=>"b", "f"=>"a", "g"=>"d", "h"=>"c"}),
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"h", "d"=>"g", "e"=>"f", "f"=>"e", "g"=>"d", "h"=>"c"}),
+        TsuroTile({"a"=>"d", "b"=>"g", "c"=>"h", "d"=>"a", "e"=>"f", "f"=>"e", "g"=>"b", "h"=>"c"}),
+        TsuroTile({"a"=>"d", "b"=>"g", "c"=>"f", "d"=>"a", "e"=>"h", "f"=>"c", "g"=>"b", "h"=>"e"}),
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"e", "d"=>"g", "e"=>"c", "f"=>"h", "g"=>"d", "h"=>"f"}),
+        TsuroTile({"a"=>"c", "b"=>"h", "c"=>"a", "d"=>"f", "e"=>"g", "f"=>"d", "g"=>"e", "h"=>"b"}),
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"g", "d"=>"h", "e"=>"f", "f"=>"e", "g"=>"c", "h"=>"d"}),
+        TsuroTile({"a"=>"e", "b"=>"c", "c"=>"b", "d"=>"h", "e"=>"a", "f"=>"g", "g"=>"f", "h"=>"d"}),
+        TsuroTile({"a"=>"h", "b"=>"g", "c"=>"e", "d"=>"f", "e"=>"c", "f"=>"d", "g"=>"b", "h"=>"a"}),
+        TsuroTile({"a"=>"c", "b"=>"d", "c"=>"a", "d"=>"b", "e"=>"g", "f"=>"h", "g"=>"e", "h"=>"f"}),
+        TsuroTile({"a"=>"e", "b"=>"h", "c"=>"g", "d"=>"f", "e"=>"a", "f"=>"d", "g"=>"c", "h"=>"b"}),
+        TsuroTile({"a"=>"d", "b"=>"f", "c"=>"g", "d"=>"a", "e"=>"h", "f"=>"b", "g"=>"c", "h"=>"e"}),
+        TsuroTile({"a"=>"c", "b"=>"d", "c"=>"a", "d"=>"b", "e"=>"f", "f"=>"e", "g"=>"h", "h"=>"g"}),
+        TsuroTile({"a"=>"h", "b"=>"c", "c"=>"b", "d"=>"f", "e"=>"g", "f"=>"d", "g"=>"e", "h"=>"a"}),
+        TsuroTile({"a"=>"g", "b"=>"d", "c"=>"f", "d"=>"b", "e"=>"h", "f"=>"c", "g"=>"a", "h"=>"e"}),
+        TsuroTile({"a"=>"h", "b"=>"d", "c"=>"f", "d"=>"b", "e"=>"g", "f"=>"c", "g"=>"e", "h"=>"a"}),
+        TsuroTile({"a"=>"f", "b"=>"c", "c"=>"b", "d"=>"g", "e"=>"h", "f"=>"a", "g"=>"d", "h"=>"e"}),
+        TsuroTile({"a"=>"g", "b"=>"f", "c"=>"e", "d"=>"h", "e"=>"c", "f"=>"b", "g"=>"a", "h"=>"d"}),
+        TsuroTile({"a"=>"b", "b"=>"a", "c"=>"g", "d"=>"f", "e"=>"h", "f"=>"d", "g"=>"c", "h"=>"e"}),
+        TsuroTile({"a"=>"g", "b"=>"f", "c"=>"h", "d"=>"e", "e"=>"d", "f"=>"b", "g"=>"a", "h"=>"c"}),
+        TsuroTile({"a"=>"g", "b"=>"c", "c"=>"b", "d"=>"h", "e"=>"f", "f"=>"e", "g"=>"a", "h"=>"b"}),
+        TsuroTile({"a"=>"d", "b"=>"f", "c"=>"h", "d"=>"a", "e"=>"g", "f"=>"b", "g"=>"e", "h"=>"c"}),
+        TsuroTile({"a"=>"c", "b"=>"g", "c"=>"a", "d"=>"h", "e"=>"f", "f"=>"e", "g"=>"b", "h"=>"d"}),
+        TsuroTile({"a"=>"f", "b"=>"d", "c"=>"h", "d"=>"b", "e"=>"g", "f"=>"a", "g"=>"e", "h"=>"c"}),
+        TsuroTile({"a"=>"e", "b"=>"g", "c"=>"h", "d"=>"f", "e"=>"a", "f"=>"d", "g"=>"b", "h"=>"c"}),
+        TsuroTile({"a"=>"e", "b"=>"d", "c"=>"h", "d"=>"b", "e"=>"a", "f"=>"g", "g"=>"f", "h"=>"c"}),
+        TsuroTile({"a"=>"h", "b"=>"d", "c"=>"g", "d"=>"b", "e"=>"f", "f"=>"e", "g"=>"c", "h"=>"a"})
+    ];
+    
+    //initialize the board
+    board := TsuroBoard(tsuroBoard, tiles, player1Pos, player2Pos);
+    
+    Worksheet.Print("Player 1 pos: " + player1Pos.ToString);
+    Worksheet.Print(board.At(player1Pos));
+    Worksheet.Print("Player 2 pos: " + player2Pos.ToString);
+    Worksheet.Print(board.At(player2Pos));
+end
+
+//for the options method, we are going to call on
+//NextPossibleBoardStates on board
+override method Options(Player player)
+    options := board.NextPossibleBoardStates(player);
+end
+
+override property ToString.get
+    return board.ToString;
+end
+
+end

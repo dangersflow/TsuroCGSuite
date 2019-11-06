@@ -1,0 +1,36 @@
+/*
+ * TsuroTile.cgs
+ *
+ * Created by pacog on Nov 3, 2019
+ */
+
+mutable class TsuroTile
+
+//class variables
+var tileMapping;
+var turnClock;
+
+method TsuroTile(tileMapping)
+    //initialize turnTilesMapping
+    turnClock := {"a"=>"c", "b"=>"d", "c"=>"e", "d"=>"f", "e"=>"g", "f"=>"h", "g"=>"a", "h"=>"b"};
+    
+end
+
+mutable method RotateTile()
+    newTile := tileMapping;
+    newTile["a"] := turnClock[tileMapping["g"]];
+    newTile["b"] := turnClock[tileMapping["h"]];
+    newTile["c"] := turnClock[tileMapping["a"]];
+    newTile["d"] := turnClock[tileMapping["b"]];
+    newTile["e"] := turnClock[tileMapping["c"]];
+    newTile["f"] := turnClock[tileMapping["d"]];
+    newTile["g"] := turnClock[tileMapping["e"]];
+    newTile["h"] := turnClock[tileMapping["f"]];
+    tileMapping := newTile;
+end
+
+override property ToString.get
+    return tileMapping.ToString;
+end
+
+end
